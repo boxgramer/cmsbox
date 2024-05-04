@@ -7,6 +7,9 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Faker\Provider\ar_EG\Text;
 use Filament\Forms;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Field;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -26,11 +29,16 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('username'),
-                TextInput::make('name'),
-                TextInput::make('email')->email(),
-                TextInput::make('password')->password(),
+                Grid::make()
+                    ->columns(1)
+                    ->schema([
+                        TextInput::make('username'),
+                        TextInput::make('name'),
+                        TextInput::make('email')->email(),
+                        TextInput::make('password')->password()->confirmed(),
+                        TextInput::make('password_confirmation')
 
+                    ])
             ]);
     }
 
