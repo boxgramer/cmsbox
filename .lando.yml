@@ -1,0 +1,17 @@
+name: cmsbox
+recipe: laravel
+config:
+  webroot: public
+  php: '8.2'
+  composer_version: 'latest'
+  database: mariadb
+
+services: 
+  database:
+    type: mariadb
+    creds:
+      user: cmsbox  
+      password: cmsbox
+      database: cmsbox
+  myadmin:
+    type: phpmyadmin
