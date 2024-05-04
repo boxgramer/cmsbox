@@ -22,7 +22,7 @@ return new class extends Migration
             $table->json('category')->nullable();
             $table->string('meta_title');
             $table->string('meta_description');
-            $table->boolean('is_publish');
+            $table->enum('status', ['draft', 'reviewing', 'publish']);
             $table->foreignId('author_id')->references('id')->on('users');
 
             $table->softDeletes();

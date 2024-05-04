@@ -2,12 +2,23 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\StatusEnum;
 use App\Filament\Resources\PostsResource\Pages;
 use App\Filament\Resources\PostsResource\RelationManagers;
 use App\Models\Posts;
+use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Support\Markdown;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,13 +28,83 @@ class PostsResource extends Resource
 {
     protected static ?string $model = Posts::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                //
+                Section::make()
+                    ->columns(1)
+                    ->schema([
+                        TextInput::make('title')->required(),
+                        TextInput::make('slug')->required(),
+                        FileUpload::make('thumbnail')->required(),
+                    ]),
+                Section::make()
+                    ->columns(1)
+                    ->schema([
+                        Textarea::make('brife_description')->required()->maxLength(255),
+                        MarkdownEditor::make('content')
+                            ->extraAttributes(['style' => 'height:500px !important'])
+                            ->toolbarButtons([
+                                'attachFiles',
+                                'blockquote',
+                                'bold',
+                                'bulletList',
+                                'codeBlock',
+                                'heading',
+                                'italic',
+                                'link',
+                                'orderedList',
+                                'redo',
+                                'strike',
+                                'table',
+                                'undo',
+
+                            ]),
+                        Select::make('tags')
+                            ->options([
+                                'tags1'   => 'Tags 1',
+                                'tags2' => 'Tags 2',
+                                'Tags3' => 'Tags 3',
+
+                            ])
+                            ->multiple()
+                            ->searchable(),
+                        Select::make('categorys')
+                            ->options([
+                                'category1'   => 'Category 1',
+                                'category2' => 'Category 2',
+                                'category3' => 'Category 3',
+
+                            ])
+                            ->multiple()
+                            ->searchable()
+                    ]),
+                Section::make()
+                    ->columns(1)
+                    ->schema([
+                        TextInput::make('meta_title')->required(),
+                        Textarea::make('meta_description')->required(),
+                    ]),
+                Section::make()
+                    ->columns(1)
+                    ->schema([
+                        Select::make('author_id ')
+                            ->label('Author')
+                            ->options(User::latest()
+                                ->get()
+                                ->pluck('name', 'id'))
+                            ->searchable(),
+                        Select::make('status')
+                            ->options(StatusEnum::class)
+                    ]),
+
+
+
+
+
             ]);
     }
 
