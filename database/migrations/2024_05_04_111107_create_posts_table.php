@@ -19,9 +19,9 @@ return new class extends Migration
             $table->text('brief_description')->nullable();
             $table->text('content')->nullable();
             $table->json('tags')->nullable();
-            $table->json('category')->nullable();
-            $table->string('meta_title');
-            $table->string('meta_description');
+            $table->json('categories')->nullable();
+            $table->string('meta_title')->nullable();
+            $table->string('meta_description')->nullable();
             $table->enum('status', ['draft', 'reviewing', 'publish']);
             $table->foreignId('author_id')->references('id')->on('users');
 

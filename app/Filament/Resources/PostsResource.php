@@ -20,6 +20,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Markdown;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -39,12 +40,16 @@ class PostsResource extends Resource
                     ->schema([
                         TextInput::make('title')->required(),
                         TextInput::make('slug')->required(),
-                        FileUpload::make('thumbnail')->required(),
+                        FileUpload::make('thumbnail')->required()
+                            ->image()
+                            ->disk('public')
+                            ->directory('thumnails')
+                            ->visibility('public'),
                     ]),
                 Section::make()
                     ->columns(1)
                     ->schema([
-                        Textarea::make('brife_description')->required()->maxLength(255),
+                        Textarea::make('brief_description')->required()->maxLength(255),
                         MarkdownEditor::make('content')
                             ->extraAttributes(['style' => 'height:500px !important'])
                             ->toolbarButtons([
@@ -62,7 +67,11 @@ class PostsResource extends Resource
                                 'table',
                                 'undo',
 
-                            ]),
+                            ])->fileAttachmentsDisk('public')
+                            ->fileAttachmentsDirectory('post')
+                            ->fileAttachmentsVisibility('public'),
+
+
                         Select::make('tags')
                             ->options([
                                 'tags1'   => 'Tags 1',
@@ -72,7 +81,7 @@ class PostsResource extends Resource
                             ])
                             ->multiple()
                             ->searchable(),
-                        Select::make('categorys')
+                        Select::make('categories')
                             ->options([
                                 'category1'   => 'Category 1',
                                 'category2' => 'Category 2',
@@ -91,7 +100,7 @@ class PostsResource extends Resource
                 Section::make()
                     ->columns(1)
                     ->schema([
-                        Select::make('author_id ')
+                        Select::make('author_id')
                             ->label('Author')
                             ->options(User::latest()
                                 ->get()
@@ -112,7 +121,10 @@ class PostsResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('title'),
+                TextColumn::make('brief_description'),
+                TextColumn::make('status'),
+
             ])
             ->filters([
                 //
